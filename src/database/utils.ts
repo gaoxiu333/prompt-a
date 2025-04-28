@@ -1,37 +1,19 @@
 import fs from 'fs';
+import { groupBy, map } from 'lodash-es';
 import path from 'path';
 
-type Metadata = {
-  title: string;
-  publishedAt: string;
-  summary: string;
-  image?: string;
-};
+import { Prompt } from '@/types/prompt';
+import { formatString } from '@/utils/string';
 
-function parseFrontmatter(fileContent: string) {
-  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
-  const match = frontmatterRegex.exec(fileContent);
+function extractMarkdownContent(fileContent: string) {
+  const markdownRegex = /```markdown\n([\s\S]*?)```/;
+  const match = markdownRegex.exec(fileContent);
 
   if (!match) {
-    return {
-      metadata: null,
-      content: fileContent,
-    };
+    return fileContent;
   }
 
-  const frontMatterBlock = match[1];
-  const content = fileContent.replace(frontmatterRegex, '').trim();
-  const frontMatterLines = frontMatterBlock.trim().split('\n');
-  const metadata: Partial<Metadata> = {};
-
-  frontMatterLines.forEach((line) => {
-    const [key, ...valueArr] = line.split(': ');
-    let value = valueArr.join(': ').trim();
-    value = value.replace(/^['"](.*)['"]$/, '$1'); // Remove quotes
-    metadata[key.trim() as keyof Metadata] = value;
-  });
-
-  return { metadata: metadata as Metadata, content };
+  return match[1].trim();
 }
 
 function getMDXFiles(dir: string): string[] {
@@ -53,9 +35,8 @@ function getMDXFiles(dir: string): string[] {
 
 function readMDXFile(filePath: string) {
   const rawContent = fs.readFileSync(filePath, 'utf-8');
-  const { metadata, content } = parseFrontmatter(rawContent);
+  const extractedContent = extractMarkdownContent(rawContent);
 
-  // 获取相对于prompts目录的路径
   const promptsBasePath = path.join(
     process.cwd(),
     'src',
@@ -66,20 +47,18 @@ function readMDXFile(filePath: string) {
   const categories = relativePath === '' ? [] : relativePath.split(path.sep);
 
   return {
-    metadata,
-    content,
-    categories,
+    content: extractedContent,
+    categories: categories[0] || 'Uncategorized',
   };
 }
 
 function getMDXData(dir: string) {
   const mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
-    const { metadata, content, categories } = readMDXFile(file);
+    const { content, categories } = readMDXFile(file);
     const slug = path.basename(file, path.extname(file));
 
     return {
-      metadata,
       slug,
       categories,
       content,
@@ -88,7 +67,10 @@ function getMDXData(dir: string) {
 }
 
 export function getPromptsFiles() {
-  return getMDXData(path.join(process.cwd(), 'src', 'database', 'prompts'));
+  const result = getMDXData(
+    path.join(process.cwd(), 'src', 'database', 'prompts'),
+  );
+  return formatPrompts(result);
 }
 
 export function formatDate(date: string, includeRelative = false) {
@@ -125,4 +107,20 @@ export function formatDate(date: string, includeRelative = false) {
   }
 
   return `${fullDate} (${formattedDate})`;
+}
+/**
+ * 格式化 prompts
+ * 按照 categories 分组
+ */
+
+function formatPrompts(prompts: Prompt[]) {
+  return groupBy(
+    map(prompts, (prompt) => {
+      return {
+        ...prompt,
+        categories: formatString(prompt.categories),
+      };
+    }),
+    'categories',
+  );
 }
