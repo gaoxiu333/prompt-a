@@ -5,14 +5,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTheme } from 'next-themes';
 
-import { recalculateColors, themeRules, tokenizer } from './utils';
+import { ThemeColors, recalculateColors, themeRules, tokenizer } from './utils';
 
 export const useThemeColors = () => {
   const { theme } = useTheme();
-  const [themeColors, setThemeColors] = useState(recalculateColors());
+  const [themeColors, setThemeColors] = useState<ThemeColors | null>(null);
   useEffect(() => {
-    // 必须等待当前调用栈执行完毕后再重新计算颜色，否则颜色更新将不会及时生效。
-    setTimeout(() => setThemeColors(recalculateColors()), 0);
+    // TODO: 这里的颜色需要确保 window.getComputedStyle 可以获取到诸如到样式，不然会导致颜色不对
+    // setTimeout(() => setThemeColors(recalculateColors()), 0);
+    setThemeColors(recalculateColors());
   }, [theme]);
 
   return themeColors;
@@ -31,36 +32,26 @@ export function useMonacoSetup({
   errorFixFn?: (errors: DocumentError[]) => void;
 } = {}) {
   const monacoRef = useRef<Monaco | null>(null);
-  const themeColors = useThemeColors();
 
-  const applyTheme = useCallback(
-    (monaco: Monaco) => {
-      console.log('applyTheme', themeRules(themeColors),themeColors);
-      monaco.editor.defineTheme('latitude', {
-        base: 'vs',
-        inherit: true,
-        rules: themeRules(themeColors),
-        colors: {
-          'editor.background': themeColors.secondary,
-          'editor.foreground': themeColors.foreground,
-          'editorLineNumber.activeForeground': themeColors.foreground,
-          'editorCursor.foreground': themeColors.foreground,
-        },
-      });
+  const applyTheme = (monaco: Monaco) => {
+    const themeColors = recalculateColors();
+    if (!themeColors) return;
+    monaco.editor.defineTheme('latitude', {
+      base: 'vs',
+      inherit: true,
+      rules: themeRules(themeColors),
+      colors: {
+        'editor.background': themeColors.secondary,
+        'editor.foreground': themeColors.foreground,
+        'editorLineNumber.activeForeground': themeColors.foreground,
+        'editorCursor.foreground': themeColors.foreground,
+      },
+    });
 
-      monaco.editor.setTheme('latitude');
-    },
-    [themeColors],
-  );
-  useEffect(() => {
-    if (!monacoRef.current) return;
-
-    applyTheme(monacoRef.current);
-  }, [applyTheme]);
+    monaco.editor.setTheme('latitude');
+  };
 
   const handleEditorWillMount = useCallback((monaco: Monaco) => {
-    if (monacoRef.current) return;
-
     monaco.languages.register({ id: 'document' });
     monaco.languages.setMonarchTokensProvider('document', { tokenizer });
     monaco.languages.setLanguageConfiguration('document', {
@@ -68,7 +59,6 @@ export function useMonacoSetup({
         blockComment: ['/*', '*/'],
       },
     });
-    applyTheme(monaco);
 
     monaco.editor.addCommand({
       id: 'fixErrors',
@@ -77,7 +67,7 @@ export function useMonacoSetup({
 
     if (errorFixFn) {
       const codeActionProvider: languages.CodeActionProvider = {
-        provideCodeActions: (_, __, context, ___) => {
+        provideCodeActions: (_, __, context) => {
           const actions = [
             {
               title: 'Fix with copilot',
@@ -118,6 +108,7 @@ export function useMonacoSetup({
   }, []);
   return {
     monacoRef,
+    applyTheme,
     handleEditorWillMount,
   };
 }

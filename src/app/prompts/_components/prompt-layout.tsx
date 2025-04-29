@@ -2,6 +2,7 @@
 
 import { ErrorBoundary } from 'react-error-boundary';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -10,9 +11,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <header className="sticky w-full top-0 z-30 flex h-14  items-center justify-center gap-4 border-b bg-background  px-4 ">
         <h1 className="text-2xl font-bold text-white">Prompt A</h1>
         <nav className="flex flex-row gap-2 pl-6">
-          <a href="/" className="text-white hover:underline">
+          <Link href="/" className="text-white hover:underline">
             Home
-          </a>
+          </Link>
           <a href="/prompts" className="text-white hover:underline">
             Prompts
           </a>

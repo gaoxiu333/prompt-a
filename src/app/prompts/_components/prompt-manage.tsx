@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react';
+
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
 import { CommonPrompt } from '@/features/prompt-manage/components/common-prompt';
-import { PromptEditor } from '@/features/prompt-manage/components/prompt-editor';
 import { PromptPreview } from '@/features/prompt-manage/components/prompt-preview';
+
+import PromptEditorLayout from './prompt-editor-layout';
 
 export function PromptManage() {
   return (
@@ -17,7 +20,7 @@ export function PromptManage() {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={55} minSize={50}>
-            <PromptEditor />
+            <PromptEditorLayout />
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={25} minSize={20}>

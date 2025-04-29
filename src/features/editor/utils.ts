@@ -1,34 +1,26 @@
-import { formatHex, oklch } from 'culori';
-import hslToHex from 'hsl-to-hex';
+import { formatHex, parse } from 'culori';
+// import hslToHex from 'hsl-to-hex';
 import { type languages } from 'monaco-editor';
 
-const style = getComputedStyle(document.body);
-
 function oklchStringToHex(input: string): string {
-  const hsl = style.getPropertyValue(input);
-  console.log('oklchStringToHex', hsl,input,style);
+  const style = getComputedStyle(document.body);
 
-  // const match = hsl.match(
-  //   /oklch\(\s*([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*\)/i,
-  // );
-  // if (!match) {
-  //   throw new Error('Invalid OKLCH string');
-  // }
-  const [, lStr, cStr, hStr] = hsl;
-  const l = parseFloat(lStr) as number;
-  const c = parseFloat(cStr) as number;
-  const h = parseFloat(hStr) as number;
+  const oklch = style.getPropertyValue(input);
 
-  const color = oklch({ mode: 'oklch', l, c, h });
+  if (!oklch) {
+    return '#000000';
+  }
+  const color = parse(oklch);
   const hex = formatHex(color);
-  return hex;
+
+  return hex as string;
 }
 
 function colorFromProperty(property: string): string {
   return oklchStringToHex(property);
-  const hsl = style.getPropertyValue(property);
-  const [h, s, l] = hsl.split(' ').map((v) => Number(v.replace('%', '')));
-  return hslToHex(h!, s!, l!);
+  // const hsl = style.getPropertyValue(property);
+  // const [h, s, l] = hsl.split(' ').map((v) => Number(v.replace('%', '')));
+  // return hslToHex(h!, s!, l!);
 }
 
 export const recalculateColors = () => ({

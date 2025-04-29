@@ -7,8 +7,28 @@ import { useCallback } from 'react';
 
 import { useMonacoSetup } from '@/features/editor/useMonacoSetup';
 
+const options = {
+  fixedOverflowWidgets: true,
+  lineDecorationsWidth: 0,
+  padding: {
+    top: 16,
+    bottom: 16,
+  },
+  lineNumbers: 'on',
+  lineNumbersMinChars: 3,
+  minimap: {
+    enabled: false,
+  },
+  copyWithSyntaxHighlighting: false,
+  cursorSmoothCaretAnimation: 'on',
+  occurrencesHighlight: 'off',
+  renderLineHighlight: 'none',
+  wordWrap: 'on',
+  tabSize: 2,
+} as editor.IEditorOptions;
+
 export function PromptEditor() {
-  const { monacoRef, handleEditorWillMount } = useMonacoSetup({
+  const { monacoRef, handleEditorWillMount, applyTheme } = useMonacoSetup({
     errorFixFn: () => {},
   });
 
@@ -23,30 +43,24 @@ export function PromptEditor() {
   const handleEditorDidMount = useCallback(
     (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
       monacoRef.current = monaco;
-      // editorRef.current = editor;
-
-      // if (autoFocus) {
-      //   moveFocusAtEnd(editor);
-      // }
-
-      // registerActions(editor, monaco);
-      // setIsEditorMounted(true);
+      applyTheme(monaco);
+      // editor.updateOptions()
     },
-    [monacoRef],
+    [monacoRef, applyTheme],
   );
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-      <h1 className="text-2xl font-bold">Prompt Editor</h1>
-      <p className="mt-4 text-lg">Edit your prompts here.</p>
+    <div className="flex flex-col items-center justify-center w-full h-full rounded-lg overflow-hidden">
       <Editor
-        height="90vh"
-        defaultLanguage="javascript"
+        height="100%"
+        width="100%"
+        defaultLanguage="document"
         defaultValue="// some comment"
         theme="latitude"
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}
         beforeMount={handleEditorWillMount}
         onValidate={handleEditorValidation}
+        options={options}
       />
     </div>
   );
