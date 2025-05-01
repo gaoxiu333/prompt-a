@@ -1,7 +1,7 @@
 'use client';
 
 import Editor, { Monaco } from '@monaco-editor/react';
-import { MarkerSeverity, Range, Selection, type editor } from 'monaco-editor';
+import { type editor } from 'monaco-editor';
 
 import { useCallback } from 'react';
 
@@ -32,11 +32,11 @@ export function PromptEditor() {
     errorFixFn: () => {},
   });
 
-  function handleEditorChange(value, event) {
+  function handleEditorChange() {
     // here is the current value
   }
 
-  function handleEditorValidation(markers) {
+  function handleEditorValidation() {
     // model markers
     // markers.forEach(marker => console.log('onValidate:', marker.message));
   }
