@@ -13,23 +13,32 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import useLLM from '../hooks/use-llm';
+import LLMApiKeyModal from './llm-apikey';
+
 const LLMProvider = () => {
+  const { llmProvider, llmProviderList, handleLLMProviderChange } = useLLM();
   return (
     <Card className="w-full">
-      {/* <h1>LLM Provider</h1>
-      <p>Select your LLM provider and model.</p> */}
       <CardContent className="flex flex-row gap-6">
         <Label>
           LLM Provider:
-          <Select name="llmProvider">
+          <Select
+            name="llmProvider"
+            value={llmProvider.id}
+            onValueChange={handleLLMProviderChange}
+          >
             <SelectTrigger className="w-[180px] cursor-pointer">
-              <SelectValue placeholder="Open AI" />
+              <SelectValue placeholder="Open AI">
+                {llmProvider.name}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="cursor-pointer">
-              <SelectItem value="light">Open AI</SelectItem>
-              <SelectItem value="dark">XAI</SelectItem>
-              <SelectItem value="system">Google</SelectItem>
-              <SelectItem value="DeepSeek">DeepSeek</SelectItem>
+              {llmProviderList.map((provider) => (
+                <SelectItem key={provider.id} value={provider.id}>
+                  {provider.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </Label>
@@ -37,23 +46,24 @@ const LLMProvider = () => {
           Model:
           <Select name="model">
             <SelectTrigger className="cursor-pointer w-[200px]">
-              <SelectValue placeholder="GPT-3.5 Turbo" />
+              <SelectValue placeholder="请选择" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-              <SelectItem value="gpt-4">GPT-4</SelectItem>
-              <SelectItem value="claude-1">Claude 1</SelectItem>
-              <SelectItem value="claude-2">Claude 2</SelectItem>
-              <SelectItem value="command-r">Command R</SelectItem>
-              <SelectItem value="palm">Palm</SelectItem>
+              {llmProvider.chatModels.map((model) => (
+                <SelectItem key={model.id} value={model.id}>
+                  {model.displayName}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </Label>
         <Label>
           API Key: 状态
-          <Button variant={'ghost'}>
-            <Edit style={{ width: '1em', height: '1em' }} />
-          </Button>
+          <LLMApiKeyModal>
+            <Button variant={'ghost'}>
+              <Edit style={{ width: '1em', height: '1em' }} />
+            </Button>
+          </LLMApiKeyModal>
         </Label>
       </CardContent>
     </Card>
