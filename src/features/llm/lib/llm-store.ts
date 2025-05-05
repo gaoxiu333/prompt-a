@@ -5,11 +5,14 @@ import { devtools, persist } from 'zustand/middleware';
 
 interface LLMStore {
   getStorage: () => Storage;
+  setApiKey: (provider: keyof LLMStore['apiKeys'], value: string) => void;
+  setApiKeys: (keys: Partial<LLMStore['apiKeys']>) => void;
   apiKeys: {
     xai: string;
     openai: string;
     cohere: string;
     google: string;
+    deepseek: string;
   };
 }
 
@@ -22,9 +25,12 @@ const useLLMStore = create<LLMStore>()(
           xai: '',
           cohere: '',
           google: '',
+          deepseek: '',
         },
         setApiKey: (provider: keyof LLMStore['apiKeys'], value: string) =>
           set({ apiKeys: { ...get().apiKeys, [provider]: value } }),
+        setApiKeys: (keys: Partial<LLMStore['apiKeys']>) =>
+          set({ apiKeys: { ...get().apiKeys, ...keys } }),
         getStorage: () => localStorage,
       }),
       {
