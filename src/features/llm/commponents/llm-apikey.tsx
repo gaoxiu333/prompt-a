@@ -1,3 +1,7 @@
+import { z } from 'zod';
+
+import { useState } from 'react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +25,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import useLLMConfig from '../hooks/use-llm-config';
+import useLLMConfig, { formSchema } from '../hooks/use-llm-config';
 
 // TODO: 添加 api key，LLM 的一些配置，这样就值得一个弹窗了。
 
@@ -30,16 +34,21 @@ interface LLMApiKeyModalProps {
 }
 
 const LLMApiKeyModal = ({ children }: LLMApiKeyModalProps) => {
-  const { llmApiKeys, form, onSubmit } = useLLMConfig();
+  const { form, onSubmit } = useLLMConfig();
+  const [open, setOpen] = useState(false);
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    await onSubmit(data);
+    setOpen(false);
+  };
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>添加 API Key</AlertDialogTitle>
         </AlertDialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="xai"
