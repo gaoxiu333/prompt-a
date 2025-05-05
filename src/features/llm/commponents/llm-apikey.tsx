@@ -36,38 +36,62 @@ const LLMApiKeyModal = ({ children }: LLMApiKeyModalProps) => {
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </AlertDialogDescription>
+          <AlertDialogTitle>添加 API Key</AlertDialogTitle>
         </AlertDialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="username"
+              name="xai"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>XAI</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="XAI key" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+                  <FormDescription>这是 XAI 的 API Key</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <FormField
+              control={form.control}
+              name="openai"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Open AI</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Open AI key" {...field} />
+                  </FormControl>
+                  <FormDescription>这是 Open AI 的 API Key</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="deepseek"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>DeepSeek</FormLabel>
+                  <FormControl>
+                    <Input placeholder="DeepSeek key" {...field} />
+                  </FormControl>
+                  <FormDescription>这是 DeepSeek 的 API Key</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <AlertDialogFooter>
+              <AlertDialogCancel className="cursor-pointer">
+                取消
+              </AlertDialogCancel>
+              <Button type="submit" className="cursor-pointer">
+                保存
+              </Button>
+            </AlertDialogFooter>
           </form>
         </Form>
-
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
-        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
