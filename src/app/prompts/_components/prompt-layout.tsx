@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </nav>
         <div className="flex-0" />
       </header>
-      <main>{children}</main>
+      <main className='pt-14 box-border flex-1'>{children}</main>
     </div>
   );
 };
