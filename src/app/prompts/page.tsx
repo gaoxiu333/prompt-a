@@ -1,3 +1,4 @@
+
 import PromptManage from './_components/prompt-manage';
 
 export default function PromptsPage() {
