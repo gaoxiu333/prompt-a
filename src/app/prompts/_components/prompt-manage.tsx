@@ -7,9 +7,9 @@ import {
 } from '@/components/ui/resizable';
 import { CommonPrompt } from '@/features/prompt-manage/components/common-prompt';
 import { PromptPreview } from '@/features/prompt-manage/components/prompt-preview';
+import PromptWrapper from '@/features/prompts/components/prompt-wrapper';
 
 import PromptEditorLayout from './prompt-editor-layout';
-import PromptSidebar from '@/features/prompts/components/prompt-sidebar';
 
 function PromptManage() {
   return (
@@ -18,7 +18,7 @@ function PromptManage() {
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20} minSize={15}>
             <div className="h-full overflow-auto">
-              <PromptSidebar />
+              <PromptWrapper />
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />

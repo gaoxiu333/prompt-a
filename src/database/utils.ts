@@ -5,6 +5,13 @@ import path from 'path';
 import { Prompt } from '@/types/prompt';
 import { formatString } from '@/utils/string';
 
+// TODO: 需要 tag 么？标签化？
+export interface PromptTreeItem {
+  name: string;
+  children?: PromptTreeItem[];
+  type: 'file' | 'folder';
+}
+
 function extractMarkdownContent(fileContent: string) {
   const markdownRegex = /```markdown\n([\s\S]*?)```/;
   const match = markdownRegex.exec(fileContent);
@@ -48,7 +55,7 @@ function readMDXFile(filePath: string) {
 
   return {
     content: extractedContent,
-    categories: categories[0] || 'Uncategorized',
+    categories: categories || 'Uncategorized',
   };
 }
 
@@ -70,7 +77,7 @@ export function getPromptsFiles() {
   const result = getMDXData(
     path.join(process.cwd(), 'src', 'database', 'prompts'),
   );
-  return formatPrompts(result);
+  return formatPromptsToTree(result);
 }
 
 export function formatDate(date: string, includeRelative = false) {
@@ -113,14 +120,48 @@ export function formatDate(date: string, includeRelative = false) {
  * 按照 categories 分组
  */
 
-function formatPrompts(prompts: Prompt[]) {
-  return groupBy(
-    map(prompts, (prompt) => {
-      return {
-        ...prompt,
-        categories: formatString(prompt.categories),
-      };
-    }),
-    'categories',
-  );
+function formatPromptsToTree(prompts: Prompt[]) {
+  const root: PromptTreeItem = {
+    name: 'root',
+    type: 'folder',
+    children: [],
+  };
+
+  // 遍历每个 prompt
+  prompts.forEach((prompt) => {
+    let currentNode = root;
+
+    // 遍历分类路径创建文件夹结构
+    prompt.categories.forEach((category) => {
+      // 查找是否已存在该分类节点
+      let found = currentNode.children?.find(
+        (child) => child.name === category,
+      );
+
+      if (!found) {
+        // 如果不存在则创建新的文件夹节点
+        const newNode: PromptTreeItem = {
+          name: category,
+          type: 'folder',
+          children: [],
+        };
+        currentNode.children = currentNode.children || [];
+        currentNode.children.push(newNode);
+        found = newNode;
+      }
+
+      currentNode = found;
+    });
+
+    // 添加文件节点
+    const fileNode: PromptTreeItem = {
+      name: prompt.slug,
+      type: 'file',
+    };
+
+    currentNode.children = currentNode.children || [];
+    currentNode.children.push(fileNode);
+  });
+
+  return root;
 }

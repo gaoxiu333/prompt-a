@@ -1,6 +1,6 @@
 export interface Prompt {
   slug: string;
-  categories: string;
+  categories: string[];
   content: string;
   metadata?: {
     title?: string;

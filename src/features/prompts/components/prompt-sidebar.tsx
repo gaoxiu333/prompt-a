@@ -4,20 +4,14 @@ import { ChevronRight } from 'lucide-react';
 
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import { PromptTreeItem } from '@/database/utils';
 
-interface TreeItem {
-  name: string;
-  children?: TreeItem[];
-  type: 'file' | 'folder';
-}
-
-const sampleData: TreeItem[] = [
+const sampleData: PromptTreeItem[] = [
   {
     name: 'src',
     type: 'folder',
@@ -58,7 +52,7 @@ const TreeNode = ({ item }: { item: TreeItem }) => {
 
         {hasChildren && (
           <CollapsibleContent>
-            {item.children?.map((child, index) => (
+            {item.children?.map((child: PromptTreeItem, index: number) => (
               <TreeNode key={`${child.name}-${index}`} item={child} />
             ))}
           </CollapsibleContent>
@@ -68,10 +62,11 @@ const TreeNode = ({ item }: { item: TreeItem }) => {
   );
 };
 
-const PromptSidebar = () => {
+const PromptSidebar = ({ data }: { data: PromptTreeItem }) => {
+  console.log('PromptSidebar data:', data);
   return (
     <div className="p-4">
-      {sampleData.map((item, index) => (
+      {data!.children!.map((item, index) => (
         <TreeNode key={`${item.name}-${index}`} item={item} />
       ))}
     </div>
