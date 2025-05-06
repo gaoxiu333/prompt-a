@@ -11,30 +11,7 @@ import {
 } from '@/components/ui/collapsible';
 import { PromptTreeItem } from '@/database/utils';
 
-const sampleData: PromptTreeItem[] = [
-  {
-    name: 'src',
-    type: 'folder',
-    children: [
-      {
-        name: 'components',
-        type: 'folder',
-        children: [
-          { name: 'Button.tsx', type: 'file' },
-          { name: 'Input.tsx', type: 'file' },
-        ],
-      },
-      { name: 'App.tsx', type: 'file' },
-    ],
-  },
-  {
-    name: 'public',
-    type: 'folder',
-    children: [{ name: 'index.html', type: 'file' }],
-  },
-];
-
-const TreeNode = ({ item }: { item: TreeItem }) => {
+const TreeNode = ({ item }: { item: PromptTreeItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -49,7 +26,6 @@ const TreeNode = ({ item }: { item: TreeItem }) => {
           )}
           <span className={`${!hasChildren ? 'ml-6' : ''}`}>{item.name}</span>
         </CollapsibleTrigger>
-
         {hasChildren && (
           <CollapsibleContent>
             {item.children?.map((child: PromptTreeItem, index: number) => (
