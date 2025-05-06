@@ -2,8 +2,7 @@ import { Monaco } from '@monaco-editor/react';
 
 import { useCallback, useRef } from 'react';
 
-import { themeRules } from '@/features/editor/utils';
-
+import { themeRules } from './theme';
 import { DocumentError } from './types';
 import { useThemeColors } from './use-theme-colors';
 

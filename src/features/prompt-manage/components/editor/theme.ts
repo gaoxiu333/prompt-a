@@ -198,3 +198,83 @@ export const options = {
   readOnly: false,
   readOnlyMessage: undefined,
 } as editor.IEditorOptions;
+
+
+export const themeRules = (themeColors: ThemeColors) => {
+  return [
+    { token: '', foreground: themeColors.foreground },
+    { token: 'yaml-delimiter', foreground: themeColors.accentForeground },
+    { token: 'yaml', foreground: themeColors.accentForeground },
+
+    { token: 'header', foreground: themeColors.primary },
+    {
+      token: 'bold',
+      fontStyle: 'bold',
+      foreground: themeColors.foreground,
+    },
+    {
+      token: 'italic',
+      fontStyle: 'italic',
+      foreground: themeColors.foreground,
+    },
+    {
+      token: 'link',
+      foreground: themeColors.primary,
+      fontStyle: 'underline',
+    },
+    {
+      token: 'tag-open',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'tag-close',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'attribute.name',
+      foreground: themeColors.destructiveMutedForeground,
+    },
+    {
+      token: 'attribute.value',
+      foreground: themeColors.foreground,
+    },
+    {
+      token: 'attribute.quote',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'js-open',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'js-close',
+      foreground: themeColors.accentForeground,
+    },
+    { token: 'js', foreground: themeColors.primary },
+    {
+      token: 'comment',
+      fontStyle: 'italic',
+      foreground: themeColors.mutedForeground,
+    },
+    {
+      token: 'bracket',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'delimiter.equal',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'control-symbol',
+      foreground: themeColors.accentForeground,
+    },
+    {
+      token: 'js-string',
+      foreground: themeColors.destructiveMutedForeground,
+    },
+    {
+      token: 'string.escape',
+      foreground: themeColors.accentForeground,
+    },
+  ]
+}
