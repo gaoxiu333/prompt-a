@@ -19,7 +19,7 @@ const PromptEditorLayout = () => {
   return (
     <div className="p-4 h-full w-full flex flex-col gap-4 items-center justify-start">
       <LLMProvider />
-      {isReady ? <PromptEditor /> : null}
+      <PromptEditor /> 
     </div>
   );
 };
