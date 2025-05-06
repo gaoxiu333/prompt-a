@@ -1,12 +1,16 @@
 'use client';
 
+import { createXai, xai } from '@ai-sdk/xai';
 import Editor, { Monaco } from '@monaco-editor/react';
+import { generateText } from 'ai';
 import { type editor } from 'monaco-editor';
+import { useStore } from 'zustand';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useMonacoSetup } from '@/features/editor/useMonacoSetup';
+import useLLMStore from '@/features/llm/lib/llm-store';
 
 const options = {
   fixedOverflowWidgets: true,
@@ -32,20 +36,33 @@ export function PromptEditor() {
   const { monacoRef, handleEditorWillMount, applyTheme } = useMonacoSetup({
     errorFixFn: () => {},
   });
+  const [value, setValue] = useState<string | undefined>(undefined);
+  const llmApiKeys = useStore(useLLMStore, (state) => state.apiKeys);
 
-  function handleEditorChange() {
+  function handleEditorChange(value: string | undefined) {
     // here is the current value
+    setValue(value);
   }
 
   function handleEditorValidation() {
     // model markers
     // markers.forEach(marker => console.log('onValidate:', marker.message));
   }
+  const submit = async () => {
+    const xai = createXai({
+      apiKey: llmApiKeys.xai,
+    });
+    const { text } = await generateText({
+      model: xai('grok-3'),
+      prompt: value,
+    });
+    console.log('text:', text);
+    // submit the value to ai
+  };
   const handleEditorDidMount = useCallback(
     (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
       monacoRef.current = monaco;
       applyTheme(monaco);
-      // editor.updateOptions()
     },
     [monacoRef, applyTheme],
   );
@@ -63,8 +80,8 @@ export function PromptEditor() {
         onValidate={handleEditorValidation}
         options={options}
       />
-      <div className='flex-0'>
-        <Button>提交</Button>
+      <div className="flex-0">
+        <Button onClick={submit}>提交</Button>
       </div>
     </div>
   );
