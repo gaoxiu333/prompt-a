@@ -5,6 +5,7 @@ import { type editor } from 'monaco-editor';
 
 import { useCallback } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { useMonacoSetup } from '@/features/editor/useMonacoSetup';
 
 const options = {
@@ -49,9 +50,9 @@ export function PromptEditor() {
     [monacoRef, applyTheme],
   );
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full rounded-lg overflow-hidden">
+    <div className="flex flex-col items-center justify-center w-full h-full rounded-lg overflow-hidden box-">
       <Editor
-        height="100%"
+        className="flex-1"
         width="100%"
         defaultLanguage="document"
         defaultValue="// some comment"
@@ -62,6 +63,9 @@ export function PromptEditor() {
         onValidate={handleEditorValidation}
         options={options}
       />
+      <div className='flex-0'>
+        <Button>提交</Button>
+      </div>
     </div>
   );
 }

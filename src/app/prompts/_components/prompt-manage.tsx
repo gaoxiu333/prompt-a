@@ -10,24 +10,32 @@ import { PromptPreview } from '@/features/prompt-manage/components/prompt-previe
 
 import PromptEditorLayout from './prompt-editor-layout';
 
-export function PromptManage() {
+function PromptManage() {
   return (
     <>
-      <div className="h-screen">
+      <div className="h-full">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20} minSize={15}>
-            <CommonPrompt />
+            <div className="h-full overflow-auto">
+              <CommonPrompt />
+            </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={55} minSize={50}>
-            <PromptEditorLayout />
+            <div className="h-full overflow-auto">
+              <PromptEditorLayout />
+            </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={25} minSize={20}>
-            <PromptPreview />
+            <div className="h-full overflow-auto">
+              <PromptPreview />
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
     </>
   );
 }
+
+export default PromptManage;
