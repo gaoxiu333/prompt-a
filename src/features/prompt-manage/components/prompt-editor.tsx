@@ -1,7 +1,7 @@
 'use client';
 
 import { createXai, xai } from '@ai-sdk/xai';
-import Editor, { Monaco } from '@monaco-editor/react';
+import { Monaco } from '@monaco-editor/react';
 import { generateText } from 'ai';
 import { type editor } from 'monaco-editor';
 import { useStore } from 'zustand';
@@ -11,6 +11,9 @@ import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMonacoSetup } from '@/features/editor/useMonacoSetup';
 import useLLMStore from '@/features/llm/lib/llm-store';
+
+import Editor from './editor';
+import EditorWrapper from './editor-wrapper';
 
 const options = {
   fixedOverflowWidgets: true,
@@ -68,17 +71,17 @@ export function PromptEditor() {
   );
   return (
     <div className="flex flex-col items-center justify-center w-full h-full rounded-lg overflow-hidden box-">
-      <Editor
-        className="flex-1"
-        width="100%"
-        defaultLanguage="document"
-        defaultValue="// some comment"
-        theme="latitude"
-        onChange={handleEditorChange}
-        onMount={handleEditorDidMount}
-        beforeMount={handleEditorWillMount}
-        onValidate={handleEditorValidation}
-        options={options}
+      <EditorWrapper
+        // className="flex-1"
+        // width="100%"
+        // defaultLanguage="document"
+        // defaultValue="// some comment"
+        // theme="latitude"
+        // onChange={handleEditorChange}
+        // onMount={handleEditorDidMount}
+        // beforeMount={handleEditorWillMount}
+        // onValidate={handleEditorValidation}
+        // options={options}
       />
       <div className="flex-0">
         <Button onClick={submit}>提交</Button>
