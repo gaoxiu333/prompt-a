@@ -11,20 +11,34 @@ import {
 } from '@/components/ui/collapsible';
 import { PromptTreeItem } from '@/database/utils';
 
+import usePrompt from '../hook/use-prompt';
+
 const TreeNode = ({ item }: { item: PromptTreeItem }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setPrompt } = usePrompt();
   const hasChildren = item.children && item.children.length > 0;
-
+  const handleClick = () => {
+    if (!hasChildren) {
+      setPrompt(item.content);
+    }
+  };
   return (
     <div className="ml-4 py-1">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="flex items-center gap-2 p-1 rounded-md w-full cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors">
+        <CollapsibleTrigger
+          onClick={handleClick}
+          className="flex items-center gap-2 p-1 rounded-md w-full cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
           {hasChildren && (
             <ChevronRight
               className={`h-4 w-4 transition-transform ${isOpen ? 'transform rotate-90' : ''}`}
             />
           )}
-          <span className={`${!hasChildren ? 'ml-6' : ''}`}>{item.name}</span>
+          <span
+            className={`${!hasChildren ? 'ml-6' : ''} bg-transparent border-none cursor-pointer`}
+          >
+            {item.title}
+          </span>
         </CollapsibleTrigger>
         {hasChildren && (
           <CollapsibleContent>
@@ -39,7 +53,6 @@ const TreeNode = ({ item }: { item: PromptTreeItem }) => {
 };
 
 const PromptSidebar = ({ data }: { data: PromptTreeItem }) => {
-  console.log('PromptSidebar data:', data);
   return (
     <div className="p-4">
       {data!.children!.map((item, index) => (

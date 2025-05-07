@@ -8,11 +8,13 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import useLLMStore from '@/features/llm/lib/llm-store';
+import usePrompt from '@/features/prompts/hook/use-prompt';
 
 import EditorWrapper from './editor-wrapper';
 
 export function PromptEditor() {
   const [value] = useState<string | undefined>(undefined);
+  const { prompt } = usePrompt();
   const llmApiKeys = useStore(useLLMStore, (state) => state.apiKeys);
 
   const submit = async () => {
@@ -29,7 +31,7 @@ export function PromptEditor() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full rounded-lg overflow-hidden">
-      <EditorWrapper />
+      <EditorWrapper value={prompt} />
       <div className="flex-0">
         <Button onClick={submit}>提交</Button>
       </div>

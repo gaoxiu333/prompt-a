@@ -1,5 +1,3 @@
-import type {} from '@redux-devtools/extension';
-import { stat } from 'fs';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 

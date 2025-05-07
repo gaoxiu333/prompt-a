@@ -193,7 +193,7 @@ export const options = {
   cursorSmoothCaretAnimation: 'on',
   occurrencesHighlight: 'off',
   renderLineHighlight: 'none',
-  wordWrap: 'off',
+  wordWrap: 'on',
   tabSize: 2,
   readOnly: false,
   readOnlyMessage: undefined,
