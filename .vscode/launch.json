@@ -2,6 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Prompt DataBase",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/packages/database/src/main.ts",
+      "runtimeExecutable": "tsx",
+      "cwd": "${workspaceFolder}/packages/database",
+      "runtimeArgs": ["watch"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**",
+        "<node_internals>/node_modules/**",
+        "${workspaceFolder}/packages/database/node_modules/**"
+      ]
+    },
+    {
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",
