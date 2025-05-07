@@ -11,6 +11,14 @@ export interface Prompt {
     publishedAt?: string;
   };
 }
+interface PromptItem {
+  name: string;
+  tags: string[];
+  type: string;
+  sourceType: string;
+  content: string;
+  path: string;
+}
 
 export interface PromptsByCategory {
   [category: string]: {
@@ -26,14 +34,26 @@ export interface PromptTreeItem {
 }
 
 function extractMarkdownContent(fileContent: string) {
+  let title = '',
+    content = fileContent;
+  const titleRegex = /#\s*(.*)/;
+  const titleMatch = titleRegex.exec(fileContent);
+  if (titleMatch) {
+    const _title = titleMatch[1]!.trim();
+    fileContent = fileContent.replace(titleRegex, '');
+    title = _title.replace(/#/g, '').trim();
+  }
   const markdownRegex = /```markdown\n([\s\S]*?)```/;
   const match = markdownRegex.exec(fileContent);
 
-  if (!match) {
-    return fileContent;
+  if (match) {
+    content = match[1]!.trim();
   }
 
-  return match[1]!.trim();
+  return {
+    title,
+    content,
+  };
 }
 
 function getMDXFiles(dir: string): string[] {
@@ -55,42 +75,51 @@ function getMDXFiles(dir: string): string[] {
 
 function readMDXFile(filePath: string) {
   const rawContent = fs.readFileSync(filePath, 'utf-8');
-  const extractedContent = extractMarkdownContent(rawContent);
+  const { title, content } = extractMarkdownContent(rawContent);
 
-  const promptsBasePath = path.join(
-    process.cwd(),
-    'src',
-    'database',
-    'prompts',
-  );
+  const promptsBasePath = path.join(process.cwd(), 'prompts');
   const relativePath = path.relative(promptsBasePath, path.dirname(filePath));
-  const categories = relativePath === '' ? [] : relativePath.split(path.sep);
+  const tags = relativePath === '' ? [] : relativePath.split(path.sep);
+  const type = tags.at(-1);
+  const sourceType = tags.at(-2) || type;
 
   return {
-    content: extractedContent,
-    categories: categories || 'Uncategorized',
-  };
+    name: title,
+    content,
+    tags: tags,
+    type,
+    sourceType,
+    path: relativePath,
+  } as PromptItem;
 }
 
 function getMDXData(dir: string) {
   const mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
-    const { content, categories } = readMDXFile(file);
-    const slug = path.basename(file, path.extname(file));
+    const {
+      content,
+      name,
+      tags,
+      type,
+      sourceType,
+      path: path_name,
+    } = readMDXFile(file);
+    const fileName = path.basename(file, path.extname(file));
 
     return {
-      slug,
-      categories,
+      name: name || fileName,
+      tags,
+      type,
+      sourceType,
       content,
-    };
+      path: path_name,
+    } as PromptItem;
   });
 }
 
 export function getPromptsFiles() {
-  const result = getMDXData(
-    path.join(process.cwd(), 'src', 'database', 'prompts'),
-  );
-  return formatPromptsToTree(result);
+  const result = getMDXData(path.join(process.cwd(), 'prompts'));
+  return result;
 }
 
 export function formatDate(date: string, includeRelative = false) {

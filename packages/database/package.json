@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx watch src/main.ts"
+    "start": "tsx watch --env-file=.env src/main.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -17,6 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ai-sdk/xai": "^1.2.15",
+    "ai": "^4.3.13",
     "lodash-es": "^4.17.21"
   }
 }
