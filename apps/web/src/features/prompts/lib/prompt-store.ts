@@ -4,7 +4,7 @@ import { devtools, persist } from 'zustand/middleware';
 interface PromptStore {
   prompt: string;
   getStorage: () => Storage;
-  setPrompt: (prompt: string) => void;
+  setPrompt: (prompt: string | undefined) => void;
 }
 
 const usePromptStore = create<PromptStore>()(
@@ -12,7 +12,8 @@ const usePromptStore = create<PromptStore>()(
     persist(
       (set, get) => ({
         prompt: '',
-        setPrompt: (prompt: string) => set({ prompt }),
+        setPrompt: (prompt: string | undefined) =>
+          set({ prompt: prompt || '' }),
         getStorage: () => localStorage,
       }),
       {

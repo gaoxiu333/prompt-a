@@ -5,8 +5,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
-import { CommonPrompt } from '@/features/prompt-manage/components/common-prompt';
-import { PromptPreview } from '@/features/prompt-manage/components/prompt-preview';
+import ChatContainer from '@/features/chat/components/chat-container';
 import PromptWrapper from '@/features/prompts/components/prompt-wrapper';
 
 import PromptEditorLayout from './prompt-editor-layout';
@@ -16,21 +15,21 @@ function PromptManage() {
     <>
       <div className="h-full">
         <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={20} minSize={15}>
+          <ResizablePanel defaultSize={20} minSize={5}>
             <div className="h-full overflow-auto">
               <PromptWrapper />
             </div>
           </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={55} minSize={50}>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={55} minSize={10}>
             <div className="h-full overflow-auto">
               <PromptEditorLayout />
             </div>
           </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={25} minSize={20}>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={25} minSize={5}>
             <div className="h-full overflow-auto">
-              <PromptPreview />
+              <ChatContainer />
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
